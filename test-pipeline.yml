@@ -1,0 +1,35 @@
+trigger:
+- main
+
+pool:
+  vmImage: 'windows-latest'
+
+jobs:
+- job: Job1
+  displayName: 'Job 1'
+  steps:
+  - powershell: |
+      Write-Output "This is Job 1. Executing PowerShell script..."
+    displayName: 'Execute PowerShell Script in Job 1'
+
+- job: Job2
+  displayName: 'Job 2'
+  dependsOn: Job1
+  steps:
+  - powershell: |
+      # Write-Error "Error! Job 2 is configured to fail."
+      Write-Output "Job 2 is executing without errors."
+      
+    displayName: 'Execute PowerShell Script in Job 2'
+
+
+- job: Job3
+  displayName: 'Job 3'
+  dependsOn:
+  - Job1
+  - Job2
+  condition: succeeded('Job2')
+  steps:
+  - powershell: |
+      Write-Output "This is Job 3. Executing PowerShell script..."
+    displayName: 'Execute PowerShell Script in Job 3'
